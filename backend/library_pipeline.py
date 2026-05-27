@@ -15,12 +15,14 @@ from backend.config import embeddings
 from backend.utils import create_youtube_timestamp_link
 
 
-#Load preloaded Chroma collection
-library_vectorstore = Chroma(
-    collection_name="preloaded_video_library",
-    embedding_function=embeddings,
-    persist_directory="chroma_db"
-)
+#Load preloaded Chroma collection only when needed
+def get_library_vectorstore():
+
+    return Chroma(
+        collection_name="preloaded_video_library",
+        embedding_function=embeddings,
+        persist_directory="chroma_db"
+    )
 
 
 #Prompt for preloaded video library Q&A
@@ -48,6 +50,9 @@ library_chain = library_prompt | llm | StrOutputParser()
 
 #Ask question across preloaded video library
 def ask_library_with_sources(question):
+
+    #Load Chroma collection only when library mode is used
+    library_vectorstore = get_library_vectorstore()
 
     #Retrieve similar chunks from preloaded library
     retrieved_docs = library_vectorstore.similarity_search_with_score(
@@ -80,6 +85,14 @@ def ask_library_with_sources(question):
 
         #Save filtered document
         filtered_docs.append(doc)
+
+    #Return fallback if no relevant chunks were found
+    if not filtered_docs:
+
+        return {
+            "answer": "The preloaded video library does not contain enough information.",
+            "sources": []
+        }
 
     #Combine transcript chunks into context
     context = "\n\n".join([

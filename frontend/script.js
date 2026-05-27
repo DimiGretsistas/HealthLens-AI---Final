@@ -168,16 +168,48 @@ if (!SpeechRecognition) {
 }
 
 speakAnswerBtn.addEventListener("click", () => {
-  const answerText = answerBox.textContent.trim();
+
+  //Stop reading if already speaking
+  if (speechSynthesis.speaking) {
+
+    speechSynthesis.cancel();
+
+    speakAnswerBtn.textContent =
+      "🔊 Read Answer";
+
+    return;
+  }
+
+  const answerText =
+    answerBox.textContent.trim();
 
   if (!answerText) return;
 
-  const utterance = new SpeechSynthesisUtterance(answerText);
+  const utterance =
+    new SpeechSynthesisUtterance(answerText);
 
   utterance.lang = "en-US";
   utterance.rate = 1;
   utterance.pitch = 1;
 
-  speechSynthesis.cancel();
+  //Change button while reading
+  speakAnswerBtn.textContent =
+    "⏹️ Stop Reading";
+
+  //Reset button when speech ends
+  utterance.onend = () => {
+
+    speakAnswerBtn.textContent =
+      "🔊 Read Answer";
+  };
+
+  //Reset button if speech errors
+  utterance.onerror = () => {
+
+    speakAnswerBtn.textContent =
+      "🔊 Read Answer";
+  };
+
   speechSynthesis.speak(utterance);
+
 });

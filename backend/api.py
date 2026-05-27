@@ -17,6 +17,7 @@ from pydantic import BaseModel
 #Import backend functions
 from backend.video_processor import process_video
 from backend.agent import health_agent
+from backend.library_pipeline import ask_library_with_sources
 
 
 #Create FastAPI app
@@ -119,6 +120,32 @@ def ask_route(data: QuestionRequest):
         return {
             "response": {
                 "answer": f"Ask failed: {str(error)}",
+                "sources": []
+            }
+        }
+
+
+#Ask preloaded video library
+@app.post("/ask-library")
+def ask_library_route(data: QuestionRequest):
+
+    try:
+
+        result = ask_library_with_sources(
+            data.question
+        )
+
+        return {
+            "response": result
+        }
+
+    except Exception as error:
+
+        print("ASK LIBRARY ERROR:", error)
+
+        return {
+            "response": {
+                "answer": f"Library ask failed: {str(error)}",
                 "sources": []
             }
         }

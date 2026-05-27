@@ -85,7 +85,10 @@ def create_rag_chunks_from_processed_chunks(
 
 
 #Convert milliseconds to YouTube timestamp link
-def create_youtube_timestamp_link(start_time_ms):
+def create_youtube_timestamp_link(start_time_ms, video_id=None):
+
+    #Use provided video id or current active video id
+    selected_video_id = video_id or state.current_video_id
 
     #Convert milliseconds to seconds
     seconds = int(start_time_ms / 1000)
@@ -100,7 +103,7 @@ def create_youtube_timestamp_link(start_time_ms):
     #Create YouTube timestamp URL
     url = (
         f"https://www.youtube.com/watch?"
-        f"v={state.current_video_id}&t={seconds}s"
+        f"v={selected_video_id}&t={seconds}s"
     )
 
     #Return timestamp data

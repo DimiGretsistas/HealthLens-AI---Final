@@ -19,24 +19,19 @@ from backend.video_processor import process_video
 from backend.agent import health_agent
 from backend.library_pipeline import ask_library_with_sources
 
-
 #Create FastAPI app
 app = FastAPI()
-
 
 #Find frontend folder
 frontend_path = Path(__file__).resolve().parent.parent / "frontend"
 
-
 #Serve frontend static files only if folder exists
 if frontend_path.exists():
-
     app.mount(
         "/static",
         StaticFiles(directory=frontend_path),
         name="static"
     )
-
 
 #Enable CORS
 app.add_middleware(
@@ -47,76 +42,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 #Request model for video processing
 class VideoRequest(BaseModel):
     youtube_url: str
-
 
 #Request model for asking questions
 class QuestionRequest(BaseModel):
     question: str
 
-
 #Serve frontend home page
 @app.get("/")
 def serve_frontend():
-
     index_file = frontend_path / "index.html"
-
     if index_file.exists():
-
         return FileResponse(index_file)
-
     return {
         "message": "API is running"
     }
 
-
 #Health check route
 @app.get("/health")
 def health_check():
-
     return {
         "message": "YouTube Health Video Q&A API is running"
     }
 
-
 #Process video route
 @app.post("/process-video")
 def process_video_route(data: VideoRequest):
-
     try:
-
         result = process_video(data.youtube_url)
-
         return {
             "message": result
         }
-
     except Exception as error:
-
         print("PROCESS VIDEO ERROR:", error)
-
         return {
             "message": f"Process video failed: {str(error)}"
         }
 
-
 #Ask question route
 @app.post("/ask")
 def ask_route(data: QuestionRequest):
-
     try:
-
         result = health_agent(data.question)
-
         return result
-
     except Exception as error:
-
         print("ASK ERROR:", error)
-
         return {
             "response": {
                 "answer": f"Ask failed: {str(error)}",
@@ -124,25 +96,18 @@ def ask_route(data: QuestionRequest):
             }
         }
 
-
 #Ask preloaded video library
 @app.post("/ask-library")
 def ask_library_route(data: QuestionRequest):
-
     try:
-
         result = ask_library_with_sources(
             data.question
         )
-
         return {
             "response": result
         }
-
     except Exception as error:
-
         print("ASK LIBRARY ERROR:", error)
-
         return {
             "response": {
                 "answer": f"Library ask failed: {str(error)}",

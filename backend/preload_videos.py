@@ -36,7 +36,6 @@ PRELOADED_VIDEOS = [
 
 #Extract YouTube video id
 def extract_video_id(youtube_url):
-
     if "v=" in youtube_url:
         return youtube_url.split("v=")[1].split("&")[0]
 
@@ -45,18 +44,13 @@ def extract_video_id(youtube_url):
 
 #Preload videos into ChromaDB
 def preload_videos():
-
     all_texts = []
     all_metadatas = []
 
     for video in PRELOADED_VIDEOS:
-
         print(f"Loading transcript: {video['title']}")
-
         video_id = extract_video_id(video["url"])
-
         transcript = supadata.transcript(video["url"])
-
         processed_chunks = []
 
         for chunk in transcript.content:

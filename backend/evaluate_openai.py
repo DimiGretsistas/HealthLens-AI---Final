@@ -16,6 +16,22 @@ judge_llm = ChatOpenAI(
 )
 
 
+#Pretty print helper
+def print_section(title, content):
+
+    print("\n" + "=" * 80)
+    print(title)
+    print("=" * 80)
+
+    if isinstance(content, list):
+
+        for item in content:
+            print(item)
+
+    else:
+        print(content)
+
+
 #Process test video
 process_video("https://www.youtube.com/watch?v=3kAiPSEnrHI")
 
@@ -86,16 +102,20 @@ Feedback: short feedback
         HumanMessage(content=judge_prompt)
     ])
 
-    #Print result
-    print("\n====================")
-    print("QUESTION:")
-    print(question)
+    #Print formatted results
+    print_section("QUESTION", question)
 
-    print("\nANSWER:")
-    print(result["answer"])
+    print_section(
+        "ANSWER",
+        result["answer"]
+    )
 
-    print("\nSOURCES:")
-    print(result["sources"])
+    print_section(
+        "SOURCES",
+        result["sources"]
+    )
 
-    print("\nEVALUATION:")
-    print(evaluation.content)
+    print_section(
+        "EVALUATION",
+        evaluation.content
+    )

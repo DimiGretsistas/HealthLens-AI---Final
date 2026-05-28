@@ -11,7 +11,7 @@ def video_qa_tool(question):
 
 #Tool 2: Summary tool
 def summary_tool():
-
+    
     #Summarize video using RAG system
     return ask_video_with_sources(
         "Summarize the main ideas of this video."

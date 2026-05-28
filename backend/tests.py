@@ -1,10 +1,8 @@
 from backend.video_processor import process_video
 from backend.agent import health_agent
 
-
 #Process test video
 print(process_video("https://www.youtube.com/watch?v=3kAiPSEnrHI"))
-
 
 #Test questions
 test_questions = [
@@ -15,9 +13,7 @@ test_questions = [
     "Summarize the video."
 ]
 
-
 for question in test_questions:
-
     result = health_agent(question)
 
     print("\n====================")

@@ -11,13 +11,16 @@ from langchain_chroma import Chroma
 from backend.config import llm
 from backend.config import embeddings
 
+#Import memory functions
+from backend.memory import save_to_memory
+from backend.memory import get_chat_history
+
 #Import utility function
 from backend.utils import create_youtube_timestamp_link
 
 
 #Load preloaded Chroma collection only when needed
 def get_library_vectorstore():
-
     return Chroma(
         collection_name="preloaded_video_library",
         embedding_function=embeddings,
@@ -29,10 +32,17 @@ def get_library_vectorstore():
 library_prompt = ChatPromptTemplate.from_template("""
 You are a helpful AI assistant answering questions using a preloaded YouTube video library.
 
+Answer in the SAME language as the user's question.
 Use ONLY the provided transcript context.
+
+Use the previous conversation ONLY to understand follow-up questions.
+Do not use previous conversation as factual evidence unless it is supported by the transcript context.
 
 If the answer is not contained in the transcript context,
 say that the preloaded video library does not contain enough information.
+
+Previous conversation:
+{chat_history}
 
 Transcript Context:
 {context}
@@ -51,12 +61,22 @@ library_chain = library_prompt | llm | StrOutputParser()
 #Ask question across preloaded video library
 def ask_library_with_sources(question):
 
+    #Load previous conversation memory
+    chat_history_text = get_chat_history()
+
+    #Create retrieval query with memory for follow-up questions
+    search_query = (
+        chat_history_text
+        + "\nCurrent question: "
+        + question
+    )
+
     #Load Chroma collection only when library mode is used
     library_vectorstore = get_library_vectorstore()
 
     #Retrieve similar chunks from preloaded library
     retrieved_docs = library_vectorstore.similarity_search_with_score(
-        question,
+        search_query,
         k=8
     )
 
@@ -89,10 +109,14 @@ def ask_library_with_sources(question):
     #Return fallback if no relevant chunks were found
     if not filtered_docs:
 
-        return {
+        result = {
             "answer": "The preloaded video library does not contain enough information.",
             "sources": []
         }
+
+        save_to_memory(question, result)
+
+        return result
 
     #Combine transcript chunks into context
     context = "\n\n".join([
@@ -103,14 +127,14 @@ def ask_library_with_sources(question):
     #Run library chain
     answer = library_chain.invoke({
         "context": context,
-        "question": question
+        "question": question,
+        "chat_history": chat_history_text
     })
 
     #Create source links
     sources = []
 
     for doc in filtered_docs:
-
         video_id = doc.metadata.get("video_id")
         start_time_ms = doc.metadata.get("start_time_ms")
         video_title = doc.metadata.get("video_title")
@@ -130,8 +154,14 @@ def ask_library_with_sources(question):
     if "preloaded video library does not contain enough information" in answer.lower():
         sources = []
 
-    #Return answer and sources
-    return {
+    #Create final result
+    result = {
         "answer": answer,
         "sources": sources[:3]
     }
+
+    #Save interaction into memory
+    save_to_memory(question, result)
+
+    #Return answer and sources
+    return result

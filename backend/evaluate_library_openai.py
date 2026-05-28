@@ -7,13 +7,11 @@ from langchain_core.messages import HumanMessage
 #Import library RAG function
 from backend.library_pipeline import ask_library_with_sources
 
-
 #Create LangChain judge model
 judge_llm = ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0
 )
-
 
 #Create evaluation questions for preloaded video library
 questions = [
@@ -38,7 +36,6 @@ questions = [
     "What does the library say about light exposure before sleep?",
     "What does the library say about improving recovery?"
 ]
-
 
 #Loop through questions
 for question in questions:

@@ -29,7 +29,6 @@ def create_rag_chunks_from_processed_chunks(
 
     #Loop through transcript chunks
     for chunk in processed_chunks:
-
         chunk_text = chunk["text"]
 
         #Set initial chunk metadata
@@ -60,9 +59,7 @@ def create_rag_chunks_from_processed_chunks(
             #Reset metadata
             current_start_time = chunk["start_time_ms"]
             current_duration = chunk["duration_ms"]
-
         else:
-
             #Append transcript text
             current_text += " " + chunk_text
 
@@ -71,7 +68,6 @@ def create_rag_chunks_from_processed_chunks(
 
     #Save final chunk
     if current_text.strip():
-
         rag_texts.append(current_text.strip())
 
         rag_metadatas.append({
@@ -79,7 +75,7 @@ def create_rag_chunks_from_processed_chunks(
             "duration_ms": current_duration,
             "language": current_language
         })
-
+        
     #Return chunked texts and metadata
     return rag_texts, rag_metadatas
 

@@ -20,7 +20,6 @@ from backend.utils import create_rag_chunks_from_processed_chunks
 
 #Extract YouTube video id safely
 def extract_video_id(youtube_url):
-
     parsed_url = urlparse(youtube_url)
 
     if "youtu.be" in parsed_url.netloc:
@@ -34,7 +33,6 @@ def extract_video_id(youtube_url):
 
         if "/shorts/" in parsed_url.path:
             return parsed_url.path.split("/shorts/")[1].split("/")[0]
-
     raise ValueError("Invalid YouTube URL")
 
 
@@ -52,7 +50,6 @@ def process_video(youtube_url):
 
     #Load transcript with Supadata
     transcript = supadata.transcript(youtube_url)
-
     print("Supadata transcript loaded")
 
     #Convert Supadata transcript chunks
@@ -71,7 +68,7 @@ def process_video(youtube_url):
     full_transcript = " ".join(
         chunk["text"] for chunk in processed_chunks
     )
-
+    
     #Create RAG chunks and metadata
     split_texts, metadatas = create_rag_chunks_from_processed_chunks(
         processed_chunks

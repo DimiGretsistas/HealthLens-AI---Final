@@ -11,14 +11,11 @@ from langchain_openai import OpenAIEmbeddings
 #Load environment variables
 load_dotenv(".env", override=True)
 
-
 #API clients
 client = OpenAI()
-
 supadata = Supadata(
     api_key=os.getenv("SUPADATA_API_KEY")
 )
-
 
 #LLM
 llm = ChatOpenAI(
@@ -26,12 +23,10 @@ llm = ChatOpenAI(
     temperature=0
 )
 
-
 #Embeddings
 embeddings = OpenAIEmbeddings(
     model="text-embedding-3-small"
 )
-
 
 #Debug
 print("OpenAI key loaded:", os.getenv("OPENAI_API_KEY") is not None)

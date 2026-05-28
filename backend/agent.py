@@ -32,7 +32,8 @@ router_prompt = ChatPromptTemplate.from_template("""
 You are an AI routing system.
 
 Your job is to choose the BEST tool for the user request.
-
+If the selected tool generates a user-facing answer, the final answer should be in the same language as the user's question.
+                                                 
 Available tools:
 - video_qa_tool
 - summary_tool
@@ -75,7 +76,6 @@ Current user request:
 
 #Create router chain
 router_chain = router_prompt | llm | StrOutputParser()
-
 
 #Create Multi-Tool Health Agent
 def health_agent(user_input):

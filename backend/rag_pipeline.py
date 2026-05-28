@@ -21,6 +21,7 @@ from backend.utils import create_youtube_timestamp_link
 rag_prompt = ChatPromptTemplate.from_template("""
 You are a helpful AI assistant answering questions about a YouTube video.
 
+Answer in the SAME language as the user's question.
 Use ONLY the provided transcript context.
 
 If the answer is not contained in the transcript,
@@ -42,7 +43,6 @@ Answer:
 #LCEL chain
 #Prompt -> LLM -> Output Parser
 rag_chain = rag_prompt | llm | StrOutputParser()
-
 
 #Retrieve similar transcript chunks
 def ask_video_with_sources(question):
@@ -107,11 +107,10 @@ def ask_video_with_sources(question):
     sources = []
 
     for doc in filtered_docs:
-
         source = create_youtube_timestamp_link(
             doc.metadata["start_time_ms"]
         )
-
+        
         #Avoid duplicate sources
         if source not in sources:
             sources.append(source)

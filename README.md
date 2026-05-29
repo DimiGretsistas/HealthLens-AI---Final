@@ -2,8 +2,9 @@
 
 https://healthlens-ai-final.onrender.com/
 https://healthlens-ai-final-1.onrender.com/
-<img width="1533" height="841" alt="Screenshot 2026-05-29 at 12 39 14" src="https://github.com/user-attachments/assets/1e667150-b3ea-43f3-88c1-c5abc212fc3f" />
+
 <img width="1629" height="798" alt="Screenshot 2026-05-29 at 12 39 18" src="https://github.com/user-attachments/assets/a4dc73c4-f9b1-4e90-b7c2-dae4c728b78c" />
+<img width="1533" height="841" alt="Screenshot 2026-05-29 at 12 39 14" src="https://github.com/user-attachments/assets/1e667150-b3ea-43f3-88c1-c5abc212fc3f" />
 
 
 AI-powered YouTube Health Video Q&A Assistant built with FastAPI, LangChain, ChromaDB, OpenAI, and Vanilla JavaScript.
